@@ -6,17 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Arcade Vault: a platform to play games online and compete for the highest score. The project follows a spec-driven workflow (`/spec` and `/spec-impl`) using the skills from https://github.com/Klerith/fernando-skills (installed via `npx skills@latest add Klerith/fernando-skills`). The codebase is still the freshly scaffolded Create Next App; no game or scoring features exist yet.
 
-## Commands
-
-- `npm run dev` — dev server (http://localhost:3000)
-- `npm run build` / `npm start` — production build / serve
-- `npm run lint` — ESLint (flat config in `eslint.config.mjs`, `eslint-config-next`)
-
 No test runner is configured.
 
 ## Next.js version warning
 
 Next.js 16.4.2 with React 19.3 — newer than typical training data. `AGENTS.md` requires reading the relevant guide in `node_modules/next/dist/docs/` (`01-app`, `02-pages`, `03-architecture`, `04-community`) before writing Next.js code, and heeding deprecation notices.
+
+## Skills
+Usa siempre /frontend-design para diseñar la interfaz de usuario
 
 ## Architecture
 
