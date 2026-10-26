@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Press_Start_2P } from "next/font/google";
+import { Footer } from "./_components/footer";
+import { Nav } from "./_components/nav";
 import { SessionProvider } from "./_components/session-provider";
 import "./globals.css";
 
@@ -26,7 +28,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${pressStart.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <SessionProvider>{children}</SessionProvider>
+        <div className="av-bg" />
+        <div className="av-noise" />
+        <SessionProvider>
+          <div className="relative z-2 flex min-h-full flex-1 flex-col">
+            <Nav />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </SessionProvider>
       </body>
     </html>
   );
