@@ -1,40 +1,42 @@
 import type { Metadata } from "next";
-import { Courier_Prime, JetBrains_Mono, Press_Start_2P } from "next/font/google";
+import { JetBrains_Mono, Press_Start_2P } from "next/font/google";
+import { Footer } from "./_components/footer";
+import { Nav } from "./_components/nav";
+import { SessionProvider } from "./_components/session-provider";
 import "./globals.css";
 
 const pressStart = Press_Start_2P({
-  variable: "--font-press-start",
   weight: "400",
+  variable: "--font-press-start",
   subsets: ["latin"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  weight: ["400", "500", "700"],
-  subsets: ["latin"],
-});
-
-const courierPrime = Courier_Prime({
-  variable: "--font-courier-prime",
-  weight: ["400", "700"],
+  variable: "--font-jetbrains",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   title: "Arcade Vault",
-  description: "Juega online y compite por la puntuación más alta.",
+  description: "Juega online y compite por la mayor puntuación.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      className={`${pressStart.variable} ${jetbrainsMono.variable} ${courierPrime.variable}`}
+      className={`${pressStart.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body>
-        <div className="av-bg" aria-hidden="true" />
-        <div className="av-noise" aria-hidden="true" />
-        <div id="root">{children}</div>
+      <body className="min-h-full flex flex-col">
+        <div className="av-bg" />
+        <div className="av-noise" />
+        <SessionProvider>
+          <div className="relative z-2 flex min-h-full flex-1 flex-col">
+            <Nav />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </SessionProvider>
       </body>
     </html>
   );

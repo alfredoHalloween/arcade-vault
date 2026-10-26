@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Arcade Vault: a platform to play games online and compete for the highest score. The project follows a spec-driven workflow (`/spec` and `/spec-impl`) using the skills from https://github.com/Klerith/fernando-skills (installed via `npx skills@latest add Klerith/fernando-skills`). The codebase is still the freshly scaffolded Create Next App; no game or scoring features exist yet.
+Arcade Vault: a platform to play games online and compete for the highest score. The project follows a spec-driven workflow (`/spec` and `/spec-impl`) using the skills from https://github.com/Klerith/fernando-skills (installed via `npx skills@latest add Klerith/fernando-skills`). Spec 01 (`specs/01-mvp-pantallas-visuales.md`) built the visual MVP: five screens with mock data and a placeholder player. No real game, auth, database or shared scoring exists yet.
 
 No test runner is configured.
 
@@ -20,4 +20,9 @@ Usa siempre /frontend-design para diseñar la interfaz de usuario
 - App Router only (`app/`); path alias `@/*` maps to the repo root.
 - `next.config.ts` enables `cacheComponents`, `partialPrefetching` and `experimental.agentFeedback`. `cacheComponents` changes data-fetching/caching semantics, so check the docs before writing server components or fetches.
 - Tailwind CSS v4 is wired through Turbopack: a `*.css` rule in `next.config.ts` uses the `@tailwindcss/turbopack` loader (no `tailwind.config`; theme tokens live in `@theme inline` in `app/globals.css`, with light/dark CSS variables via `prefers-color-scheme`).
-- `app/layout.tsx` uses the globally typed `LayoutProps<"/">` helper (no import) and loads Geist / Geist Mono through `next/font/google`.
+- `app/layout.tsx` uses the globally typed `LayoutProps<"/">` helper (no import) and loads Press Start 2P / JetBrains Mono through `next/font/google` (`--font-press-start`, `--font-jetbrains`, exposed as `font-pixel` / `font-mono`). It mounts the background, `SessionProvider`, `Nav`, `<main>` and `Footer`.
+- Routes: `/` (library), `/juegos/[id]` (detail), `/juegos/[id]/jugar` (placeholder player), `/acceso` (login), `/salon` (hall of fame). Dynamic routes use `generateStaticParams` over `GAMES`; with `cacheComponents` an unknown `id` renders the 404 UI via `notFound()` but with HTTP 200 (`dynamicParams` is not supported).
+- Mock data lives in `app/data/` (`types.ts`, `games.ts`, `scores.ts` with the seeded score generator). Shared client components are in `app/_components/`.
+- Session and saved scores are simulated in `localStorage` (`av_user`, `av_scores`) through `SessionProvider` / `useSession()` (`useSyncExternalStore`, so the first client render matches the server).
+- Theme tokens (`--bg`, `--cyan`, …) are in `app/globals.css` and mapped in `@theme inline`. Effects Tailwind can't express (`av-bg`, `cover-*`, CRT, keyframes, `.btn`) are plain CSS there; `.btn` is in `@layer components` so utilities can override it.
+- `references/templates/` is the original React-UMD prototype, kept only as a design reference (never import from it; `npm run lint` still reports errors there).
