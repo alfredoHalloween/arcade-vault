@@ -23,7 +23,7 @@ export function LibraryBrowser() {
             onChange={(e) => setQ(e.target.value)}
             placeholder="Buscar un juego por nombre…"
             aria-label="Buscar un juego por nombre"
-            className="flex-1 border-0 bg-transparent text-[13px] tracking-[0.04em] text-ink outline-0 placeholder:text-ink-faint"
+            className="flex-1 border-0 bg-transparent px-0.5 py-px text-[13px] tracking-[0.04em] text-ink outline-0 placeholder:text-ink-faint"
           />
         </label>
         <div className="flex flex-wrap gap-2">
