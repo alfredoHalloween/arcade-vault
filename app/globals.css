@@ -34,8 +34,18 @@
   --color-bronze: var(--bronze);
   --color-line: var(--line);
   --color-line-2: var(--line-2);
-  --font-pixel: var(--font-press-start), system-ui, monospace;
-  --font-mono: var(--font-jetbrains), "Courier Prime", "Courier New", monospace;
+  /* Real family names from next/font, not its size-adjusted Arial fallback: that fallback draws symbols like ▲ at the wrong size. */
+  --font-pixel: "Press Start 2P", system-ui, monospace;
+  --font-mono: "JetBrains Mono", "Courier Prime", "Courier New", monospace;
+  /* the prototype inherits line-height 1.5 everywhere; keep Tailwind's size presets in line with it */
+  --text-xs--line-height: 1.5;
+  --text-sm--line-height: 1.5;
+  --text-base--line-height: 1.5;
+  --text-lg--line-height: 1.5;
+  --text-xl--line-height: 1.5;
+  --text-2xl--line-height: 1.5;
+  --text-3xl--line-height: 1.5;
+  --text-4xl--line-height: 1.5;
 }
 
 html,
