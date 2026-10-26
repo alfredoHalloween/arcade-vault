@@ -1,26 +1,56 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #0a0a0f;
+  --bg-2: #0f0f18;
+  --bg-3: #15151f;
+  --ink: #e6e9ff;
+  --ink-dim: #8a8fb5;
+  --ink-faint: #4a4f70;
+  --cyan: #00f5ff;
+  --magenta: #ff006e;
+  --yellow: #f5ff00;
+  --green: #00ff88;
+  --gold: #ffcf3a;
+  --silver: #c7d0e0;
+  --bronze: #d97a3a;
+  --line: rgba(0, 245, 255, 0.18);
+  --line-2: rgba(255, 255, 255, 0.06);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-bg-3: var(--bg-3);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-ink-faint: var(--ink-faint);
+  --color-cyan: var(--cyan);
+  --color-magenta: var(--magenta);
+  --color-yellow: var(--yellow);
+  --color-green: var(--green);
+  --color-gold: var(--gold);
+  --color-silver: var(--silver);
+  --color-bronze: var(--bronze);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --font-pixel: var(--font-press-start), system-ui, monospace;
+  --font-mono: var(--font-jetbrains), "Courier Prime", "Courier New", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
+  margin: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
