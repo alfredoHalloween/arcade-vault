@@ -23,3 +23,13 @@ export type ScoreRow = {
 export type SessionUser = { name: string };
 
 export type SavedScore = { game: string; score: number; name: string; at: number };
+
+export type RecentScore = {
+  player: string;
+  gameId: string;
+  score: number;
+  ago: string;
+  color: GameColor;
+};
+
+export type TopPlayer = { rank: number; player: string; score: number };
