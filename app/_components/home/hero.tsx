@@ -32,7 +32,7 @@ export function Hero() {
           </Link>
         </div>
         <div
-          className="absolute -bottom-5 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 font-pixel text-[9px] tracking-[0.2em] text-ink-faint max-[720px]:hidden"
+          className="mt-14 flex flex-col items-center gap-2 font-pixel text-[9px] tracking-[0.2em] text-ink-faint max-[720px]:hidden"
           aria-hidden="true"
         >
           <span>DESLIZA</span>

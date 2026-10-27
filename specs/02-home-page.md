@@ -1,6 +1,6 @@
 # SPEC 02 — Home page (landing) y biblioteca en `/biblioteca`
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 01 (`01-mvp-pantallas-visuales.md`)
 > **Reemplaza a:** `01-home-page.md` (obsoleta: asumía el scaffold de Create Next App)
 > **Fecha:** 2026-10-26
