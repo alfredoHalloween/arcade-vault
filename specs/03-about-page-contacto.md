@@ -1,6 +1,6 @@
 # SPEC 03 — Página "Acerca de" y envío del formulario de contacto con Resend
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 01 (`01-mvp-pantallas-visuales.md`) y SPEC 02 (`02-home-page.md`)
 > **Fecha:** 2026-10-26
 > **Objetivo:** Implementar en `/acerca` la página de `references/templates/home-about/about.jsx` (Acerca de + Contacto) y hacer que su formulario envíe un correo real con Resend mediante una Server Action.
@@ -95,23 +95,23 @@ Cada paso deja la app ejecutable (`npm run dev`) y se puede commitear solo.
 
 ## Criterios de aceptación
 
-- [ ] `npx tsc --noEmit` y `npx eslint app` terminan sin errores.
-- [ ] `/acerca` responde 200 y muestra, en orden: "ACERCA DE ARCADE VAULT", los 3 destacados (corazón, navegador, planta), el divisor con 24 píxeles y la sección "CONTÁCTANOS" con 3 tips y el formulario.
-- [ ] Los textos coinciden literalmente con `about.jsx`.
-- [ ] El Nav muestra "Acerca de" tras "Salón de la Fama"; en `/acerca` solo ese enlace está activo, en escritorio y en el menú móvil.
-- [ ] Enviar con cualquier campo vacío (o solo espacios) activa el *shake* durante 400 ms y no llama a la Server Action.
-- [ ] Con datos válidos y `RESEND_API_KEY` correcta, llega un correo a `ja.garcia.gonzalez2014@gmail.com` con asunto `[Arcade Vault] Mensaje de <nombre>`, el mensaje en el cuerpo y `Reply-To` igual al correo escrito.
-- [ ] Tras el envío se muestra la terminal con "MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS, <NOMBRE EN MAYÚSCULAS>."; "ENVIAR OTRO MENSAJE" vuelve al formulario vacío.
-- [ ] Mientras se envía, el botón está deshabilitado y dice "TRANSMITIENDO…".
-- [ ] Con una API key inválida o sin `RESEND_API_KEY`, se muestra el estado de error con "REINTENTAR", se conserva lo escrito y el mensaje no contiene la clave ni el detalle del proveedor.
-- [ ] Un correo sin formato válido, o un campo por encima del límite, es rechazado por el servidor aunque se salte la validación del cliente.
-- [ ] Con el campo oculto `website` relleno, la acción responde éxito y no se envía ningún correo (no aparece en el panel de Resend).
-- [ ] `RESEND_API_KEY` no aparece en el HTML, en los bundles del cliente ni en `git status`/`git diff`.
-- [ ] Solo `contact-form.tsx` (además de los componentes cliente previos) añade `"use client"`; `page.tsx` y `highlight-icon.tsx` no.
-- [ ] La consola del navegador no muestra errores ni avisos de hidratación en `/acerca`.
-- [ ] A 375 px no hay scroll horizontal en `/acerca`.
-- [ ] En capturas desktop y móvil, estructura, tipografías y colores neón coinciden con el template.
-- [ ] Ningún archivo bajo `app/` importa de `references/`.
+- [X] `npx tsc --noEmit` y `npx eslint app` terminan sin errores.
+- [X] `/acerca` responde 200 y muestra, en orden: "ACERCA DE ARCADE VAULT", los 3 destacados (corazón, navegador, planta), el divisor con 24 píxeles y la sección "CONTÁCTANOS" con 3 tips y el formulario.
+- [X] Los textos coinciden literalmente con `about.jsx`.
+- [X] El Nav muestra "Acerca de" tras "Salón de la Fama"; en `/acerca` solo ese enlace está activo, en escritorio y en el menú móvil.
+- [X] Enviar con cualquier campo vacío (o solo espacios) activa el *shake* durante 400 ms y no llama a la Server Action.
+- [X] Con datos válidos y `RESEND_API_KEY` correcta, llega un correo a `ja.garcia.gonzalez2014@gmail.com` con asunto `[Arcade Vault] Mensaje de <nombre>`, el mensaje en el cuerpo y `Reply-To` igual al correo escrito.
+- [X] Tras el envío se muestra la terminal con "MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS, <NOMBRE EN MAYÚSCULAS>."; "ENVIAR OTRO MENSAJE" vuelve al formulario vacío.
+- [X] Mientras se envía, el botón está deshabilitado y dice "TRANSMITIENDO…".
+- [X] Con una API key inválida o sin `RESEND_API_KEY`, se muestra el estado de error con "REINTENTAR", se conserva lo escrito y el mensaje no contiene la clave ni el detalle del proveedor.
+- [X] Un correo sin formato válido, o un campo por encima del límite, es rechazado por el servidor aunque se salte la validación del cliente.
+- [X] Con el campo oculto `website` relleno, la acción responde éxito y no se envía ningún correo (no aparece en el panel de Resend).
+- [X] `RESEND_API_KEY` no aparece en el HTML, en los bundles del cliente ni en `git status`/`git diff`.
+- [X] Solo `contact-form.tsx` (además de los componentes cliente previos) añade `"use client"`; `page.tsx` y `highlight-icon.tsx` no.
+- [X] La consola del navegador no muestra errores ni avisos de hidratación en `/acerca`.
+- [X] A 375 px no hay scroll horizontal en `/acerca`.
+- [X] En capturas desktop y móvil, estructura, tipografías y colores neón coinciden con el template.
+- [X] Ningún archivo bajo `app/` importa de `references/`.
 
 ---
 
