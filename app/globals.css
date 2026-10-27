@@ -163,6 +163,18 @@ body {
   to { opacity: 1; transform: none; }
 }
 @keyframes spinpix { to { transform: rotate(360deg); } }
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-14px) rotate(2deg); } }
+@keyframes bounce { 50% { transform: translateY(6px); } }
+
+/* ===== home: siluetas flotantes y reveal-on-scroll ===== */
+.silo {
+  position: absolute;
+  filter: drop-shadow(0 0 10px currentColor);
+  animation: float 6s ease-in-out infinite;
+  image-rendering: pixelated;
+}
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 600ms ease, transform 600ms ease; }
+.reveal.in { opacity: 1; transform: none; }
 
 /* ===== cover art generators (pure CSS) ===== */
 .cover-bricks {
