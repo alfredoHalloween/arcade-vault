@@ -1,6 +1,6 @@
 # SPEC 01 — Home page y Nav global
 
-> **Status:** Aprobado
+> **Status:** Obsoleta (reemplazada por `02-home-page.md`)
 > **Depends on:** Ninguna
 > **Date:** 2026-10-26
 > **Objective:** Implementar en Next.js la landing `/` y la barra de navegación global de Arcade Vault, fieles al template `references/templates/home-about/`, con datos mock tipados.
