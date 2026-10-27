@@ -1,6 +1,6 @@
 # SPEC 05 — Primer juego real: ROCAS (Asteroids) dentro del reproductor
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 01 (`01-mvp-pantallas-visuales.md`)
 > **Fecha:** 2026-10-27
 > **Objetivo:** Adaptar el juego Asteroids de `references/started-games/02-asteroids/` como el juego real de la entrada `rocas`, jugable en `/juegos/rocas/jugar` dentro del marco de `GamePlayer`, que controla la pausa y el fin de partida.
@@ -112,30 +112,30 @@ Cada paso deja la app ejecutable (`npm run dev`) y se puede commitear solo.
 
 ## Criterios de aceptación
 
-- [ ] `npx tsc --noEmit` y `npx eslint app` terminan sin errores.
-- [ ] `/juegos/rocas/jugar` responde 200, muestra el canvas del juego dentro de la pantalla CRT y la consola no muestra errores ni avisos de hidratación.
-- [ ] La nave rota con ← y →, avanza con ↑ con inercia y dispara con Espacio, con un máximo de un disparo cada 0,2 s.
-- [ ] Un asteroide grande destruido suma 20 puntos y genera dos medianos; uno mediano suma 50 y genera dos pequeños; uno pequeño suma 100 y no genera nada.
-- [ ] La nave, las balas y los asteroides reaparecen por el lado opuesto al cruzar un borde.
-- [ ] Al chocar con un asteroide se pierde una vida y el HUD de React pasa de `♥ ♥ ♥` a `♥ ♥`; la nave reaparece a los 2 s en el centro, parpadea 3 s y no puede morir en ese tiempo.
-- [ ] Al limpiar todos los asteroides el HUD sube el nivel y aparecen `3 + nivel` asteroides.
-- [ ] El power-up "3x" se recoge al tocarlo y durante 5 s cada disparo lanza tres balas; la cuenta atrás se ve en el canvas.
-- [ ] El HUD muestra la puntuación, vidas y nivel reales del juego; ya no hay puntos aleatorios sumándose.
-- [ ] El botón PAUSA congela por completo el juego (nave, asteroides, balas, partículas), muestra el overlay "EN PAUSA" y REANUDAR continúa sin saltos bruscos de posición.
-- [ ] Las teclas P y Esc no pausan el juego y cambiar de pestaña no lo pausa.
-- [ ] Con el juego en marcha, ← → ↑ y Espacio no hacen scroll en la página, incluso con el botón PAUSA o REANUDAR pulsado antes, y Espacio dispara en lugar de activar ese botón.
-- [ ] En pausa o con el modal abierto, el juego no responde a las teclas, y se puede escribir (incluidos espacios) en el campo de iniciales del modal.
-- [ ] Al perder la última vida se abre el modal "FIN DEL JUEGO" con la puntuación final correcta y no aparece ningún "GAME OVER" dibujado en el canvas.
-- [ ] El botón FIN abre el mismo modal con la puntuación en ese momento y el juego queda congelado detrás.
-- [ ] GUARDAR PUNTUACIÓN guarda en `av_scores` una entrada con `game: "rocas"` y esa puntuación.
-- [ ] JUGAR DE NUEVO reinicia desde puntuación 0, 3 vidas y nivel 1, sin duplicar listeners ni bucles (la nave no se mueve el doble de rápido tras reiniciar).
-- [ ] Salir de la página (SALIR) deja de ejecutar el bucle y quita los listeners de teclado: tras volver a `/biblioteca`, las flechas y Espacio vuelven a hacer scroll.
-- [ ] A 375 px el canvas ocupa el ancho disponible, mantiene la proporción 4:3, sin scroll horizontal; a 1280 px no supera 800 px de ancho lógico escalado y sus trazos se ven nítidos.
-- [ ] Los trazos usan los colores de los tokens del tema (nave cian, asteroides magenta, balas amarillas, power-up verde) con glow.
-- [ ] `/juegos/serpentina/jugar` y el resto de juegos distintos de `rocas` siguen mostrando el placeholder y su puntuación simulada sin cambios.
-- [ ] El texto `long` de `rocas` ya no menciona OVNIs.
-- [ ] Ningún archivo bajo `app/` importa de `references/`.
-- [ ] `CLAUDE.md` documenta el registro de juegos jugables y el contrato `GameCanvasProps`.
+- [X] `npx tsc --noEmit` y `npx eslint app` terminan sin errores.
+- [X] `/juegos/rocas/jugar` responde 200, muestra el canvas del juego dentro de la pantalla CRT y la consola no muestra errores ni avisos de hidratación.
+- [X] La nave rota con ← y →, avanza con ↑ con inercia y dispara con Espacio, con un máximo de un disparo cada 0,2 s.
+- [X] Un asteroide grande destruido suma 20 puntos y genera dos medianos; uno mediano suma 50 y genera dos pequeños; uno pequeño suma 100 y no genera nada.
+- [X] La nave, las balas y los asteroides reaparecen por el lado opuesto al cruzar un borde.
+- [X] Al chocar con un asteroide se pierde una vida y el HUD de React pasa de `♥ ♥ ♥` a `♥ ♥`; la nave reaparece a los 2 s en el centro, parpadea 3 s y no puede morir en ese tiempo.
+- [X] Al limpiar todos los asteroides el HUD sube el nivel y aparecen `3 + nivel` asteroides.
+- [X] El power-up "3x" se recoge al tocarlo y durante 5 s cada disparo lanza tres balas; la cuenta atrás se ve en el canvas.
+- [X] El HUD muestra la puntuación, vidas y nivel reales del juego; ya no hay puntos aleatorios sumándose.
+- [X] El botón PAUSA congela por completo el juego (nave, asteroides, balas, partículas), muestra el overlay "EN PAUSA" y REANUDAR continúa sin saltos bruscos de posición.
+- [X] Las teclas P y Esc no pausan el juego y cambiar de pestaña no lo pausa.
+- [X] Con el juego en marcha, ← → ↑ y Espacio no hacen scroll en la página, incluso con el botón PAUSA o REANUDAR pulsado antes, y Espacio dispara en lugar de activar ese botón.
+- [X] En pausa o con el modal abierto, el juego no responde a las teclas, y se puede escribir (incluidos espacios) en el campo de iniciales del modal.
+- [X] Al perder la última vida se abre el modal "FIN DEL JUEGO" con la puntuación final correcta y no aparece ningún "GAME OVER" dibujado en el canvas.
+- [X] El botón FIN abre el mismo modal con la puntuación en ese momento y el juego queda congelado detrás.
+- [X] GUARDAR PUNTUACIÓN guarda en `av_scores` una entrada con `game: "rocas"` y esa puntuación.
+- [X] JUGAR DE NUEVO reinicia desde puntuación 0, 3 vidas y nivel 1, sin duplicar listeners ni bucles (la nave no se mueve el doble de rápido tras reiniciar).
+- [X] Salir de la página (SALIR) deja de ejecutar el bucle y quita los listeners de teclado: tras volver a `/biblioteca`, las flechas y Espacio vuelven a hacer scroll.
+- [X] A 375 px el canvas ocupa el ancho disponible, mantiene la proporción 4:3, sin scroll horizontal; a 1280 px no supera 800 px de ancho lógico escalado y sus trazos se ven nítidos.
+- [X] Los trazos usan los colores de los tokens del tema (nave cian, asteroides magenta, balas amarillas, power-up verde) con glow.
+- [X] `/juegos/serpentina/jugar` y el resto de juegos distintos de `rocas` siguen mostrando el placeholder y su puntuación simulada sin cambios.
+- [X] El texto `long` de `rocas` ya no menciona OVNIs.
+- [X] Ningún archivo bajo `app/` importa de `references/`.
+- [X] `CLAUDE.md` documenta el registro de juegos jugables y el contrato `GameCanvasProps`.
 
 ---
 
