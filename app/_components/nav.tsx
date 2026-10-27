@@ -6,12 +6,14 @@ import { useState } from "react";
 import { useSession } from "./session-provider";
 
 const LINKS = [
-  { href: "/", label: "Biblioteca" },
+  { href: "/", label: "Inicio" },
+  { href: "/biblioteca", label: "Biblioteca" },
   { href: "/salon", label: "Salón de la Fama" },
 ];
 
 function isActive(pathname: string, href: string) {
-  if (href === "/") return pathname === "/" || pathname.startsWith("/juegos");
+  if (href === "/") return pathname === "/";
+  if (href === "/biblioteca") return pathname.startsWith("/biblioteca") || pathname.startsWith("/juegos");
   return pathname.startsWith(href);
 }
 
