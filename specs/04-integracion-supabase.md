@@ -1,6 +1,6 @@
 # SPEC 04 — Integración base con Supabase
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** Ninguna (infraestructura; reutiliza la convención de `.env.local` de la SPEC 03)
 > **Fecha:** 2026-10-27
 > **Objetivo:** Dejar el proyecto Next.js listo para usar el proyecto de Supabase existente (dependencias, variables de entorno, clientes de navegador y servidor, y documentación), sin cambiar ninguna pantalla ni crear tablas.
@@ -85,20 +85,20 @@ Cada paso deja la app ejecutable (`npm run dev`) y se puede commitear solo.
 
 ## Criterios de aceptación
 
-- [ ] `package.json` incluye `@supabase/supabase-js` y `@supabase/ssr` y ninguna otra dependencia nueva.
-- [ ] `npx tsc --noEmit` y `npx eslint app lib` terminan sin errores.
-- [ ] `.env.local` contiene `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, y `git status` no lo lista.
-- [ ] `.env.example` está versionado, contiene solo esas dos variables y no incluye `SUPABASE_DB_PASSWORD`, `service_role` ni la clave `anon` heredada.
-- [ ] No existe `lib/supabase/database.types.ts` y ningún archivo usa un tipo `Database`.
-- [ ] `list_tables` del MCP de Supabase sigue devolviendo una lista vacía.
-- [ ] `lib/supabase/client.ts` exporta `createClient`, implementado con `createBrowserClient`.
-- [ ] Ningún archivo del repo importa `createClient` de `@supabase/supabase-js`; solo `@supabase/ssr` se importa desde `lib/supabase/`.
-- [ ] `lib/supabase/server.ts` exporta `createClient`, implementado con `createServerClient`, y lee las cookies con `next/headers`.
-- [ ] `client.ts` no importa `next/headers` y `server.ts` no usa `"use client"`.
-- [ ] No existen `proxy.ts`, `supabase/functions/` ni `supabase/migrations/`.
-- [ ] Ningún archivo bajo `app/` importa de `lib/supabase/`, y ninguno cambia: `git diff --stat` solo muestra `package.json`, `package-lock.json`, `.gitignore`, `.env.example`, `lib/supabase/` (`client.ts`, `server.ts`), `CLAUDE.md` y `specs/`.
-- [ ] `npm run dev` arranca y `/`, `/biblioteca`, `/acceso` y `/acerca` responden 200 sin errores en la consola.
-- [ ] `CLAUDE.md` documenta las dos variables, los dos clientes y el uso futuro de Realtime y Edge Functions.
+- [X] `package.json` incluye `@supabase/supabase-js` y `@supabase/ssr` y ninguna otra dependencia nueva.
+- [X] `npx tsc --noEmit` y `npx eslint app lib` terminan sin errores.
+- [X] `.env.local` contiene `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, y `git status` no lo lista.
+- [X] `.env.example` está versionado, contiene solo esas dos variables y no incluye `SUPABASE_DB_PASSWORD`, `service_role` ni la clave `anon` heredada.
+- [X] No existe `lib/supabase/database.types.ts` y ningún archivo usa un tipo `Database`.
+- [X] `list_tables` del MCP de Supabase sigue devolviendo una lista vacía.
+- [X] `lib/supabase/client.ts` exporta `createClient`, implementado con `createBrowserClient`.
+- [X] Ningún archivo del repo importa `createClient` de `@supabase/supabase-js`; solo `@supabase/ssr` se importa desde `lib/supabase/`.
+- [X] `lib/supabase/server.ts` exporta `createClient`, implementado con `createServerClient`, y lee las cookies con `next/headers`.
+- [X] `client.ts` no importa `next/headers` y `server.ts` no usa `"use client"`.
+- [X] No existen `proxy.ts`, `supabase/functions/` ni `supabase/migrations/`.
+- [X] Ningún archivo bajo `app/` importa de `lib/supabase/`, y ninguno cambia: `git diff --stat` solo muestra `package.json`, `package-lock.json`, `.gitignore`, `.env.example`, `lib/supabase/` (`client.ts`, `server.ts`), `CLAUDE.md` y `specs/`.
+- [X] `npm run dev` arranca y `/`, `/biblioteca`, `/acceso` y `/acerca` responden 200 sin errores en la consola.
+- [X] `CLAUDE.md` documenta las dos variables, los dos clientes y el uso futuro de Realtime y Edge Functions.
 
 ---
 
