@@ -9,6 +9,7 @@ const LINKS = [
   { href: "/", label: "Inicio" },
   { href: "/biblioteca", label: "Biblioteca" },
   { href: "/salon", label: "Salón de la Fama" },
+  { href: "/acerca", label: "Acerca de" },
 ];
 
 function isActive(pathname: string, href: string) {
