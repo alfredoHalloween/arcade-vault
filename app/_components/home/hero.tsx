@@ -24,10 +24,10 @@ export function Hero() {
           Sin descargas. Sin costo. Solo diversión.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/biblioteca" className="btn btn-xl pulse">
+          <Link href="/biblioteca" className="btn xl pulse">
             ▶&nbsp; EXPLORAR JUEGOS
           </Link>
-          <Link href="/acceso" className="btn btn-xl btn-magenta">
+          <Link href="/acceso" className="btn xl magenta">
             ✦&nbsp; CREAR CUENTA
           </Link>
         </div>

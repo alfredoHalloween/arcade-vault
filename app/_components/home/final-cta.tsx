@@ -7,7 +7,7 @@ export function FinalCta() {
       <h2 className="mb-9 bg-linear-to-b from-white to-yellow bg-clip-text font-pixel text-[clamp(22px,4vw,40px)] tracking-[0.08em] text-transparent drop-shadow-[0_0_12px_rgba(245,255,0,0.4)]">
         ¿LISTO PARA JUGAR?
       </h2>
-      <Link href="/biblioteca" className="btn btn-xl pulse px-11 py-6">
+      <Link href="/biblioteca" className="btn xl pulse px-11! py-6!">
         INSERTAR MONEDA →
       </Link>
       <div className="mt-7 text-[13px] tracking-[0.06em] text-ink-dim">

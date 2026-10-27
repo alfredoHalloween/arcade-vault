@@ -14,7 +14,7 @@ export function GamesPreview() {
         ))}
       </div>
       <div className="mt-6 text-center">
-        <Link href="/biblioteca" className="btn btn-lg">
+        <Link href="/biblioteca" className="btn lg">
           VER TODOS LOS JUEGOS →
         </Link>
       </div>

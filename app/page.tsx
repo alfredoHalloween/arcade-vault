@@ -1,7 +1,21 @@
+import { ActivitySection } from "./_components/home/activity-section";
+import { FinalCta } from "./_components/home/final-cta";
+import { GamesPreview } from "./_components/home/games-preview";
+import { Hero } from "./_components/home/hero";
+import { PricingSection } from "./_components/home/pricing-section";
+import { StatsSection } from "./_components/home/stats-section";
+import { WhySection } from "./_components/home/why-section";
+
 export default function Home() {
   return (
-    <div className="fade-in px-8 py-16 text-center">
-      <h1 className="font-pixel text-[clamp(20px,4vw,40px)] text-cyan">ARCADE VAULT</h1>
+    <div className="fade-in relative">
+      <Hero />
+      <WhySection />
+      <GamesPreview />
+      <StatsSection />
+      <ActivitySection />
+      <PricingSection />
+      <FinalCta />
     </div>
   );
 }

@@ -55,7 +55,7 @@ export function PricingSection() {
               </li>
             ))}
           </ul>
-          <Link href="/acceso" className="btn btn-xl pulse w-full justify-center">
+          <Link href="/acceso" className="btn xl pulse w-full">
             EMPEZAR GRATIS →
           </Link>
           <div className="mt-1 text-center text-[11px] tracking-[0.1em] text-ink-faint">

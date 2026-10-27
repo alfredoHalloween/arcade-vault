@@ -73,7 +73,7 @@ export function Nav() {
 
         <button
           type="button"
-          className="btn btn-ghost hidden max-[840px]:inline-flex"
+          className="btn btn-ghost hidden! max-[840px]:inline-flex!"
           onClick={() => setOpen(true)}
           aria-label="Menú"
         >
