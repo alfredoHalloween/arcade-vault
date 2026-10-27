@@ -6,12 +6,15 @@ import { useState } from "react";
 import { useSession } from "./session-provider";
 
 const LINKS = [
-  { href: "/", label: "Biblioteca" },
+  { href: "/", label: "Inicio" },
+  { href: "/biblioteca", label: "Biblioteca" },
   { href: "/salon", label: "Salón de la Fama" },
+  { href: "/acerca", label: "Acerca de" },
 ];
 
 function isActive(pathname: string, href: string) {
-  if (href === "/") return pathname === "/" || pathname.startsWith("/juegos");
+  if (href === "/") return pathname === "/";
+  if (href === "/biblioteca") return pathname.startsWith("/biblioteca") || pathname.startsWith("/juegos");
   return pathname.startsWith(href);
 }
 
@@ -71,7 +74,7 @@ export function Nav() {
 
         <button
           type="button"
-          className="btn btn-ghost hidden max-[840px]:inline-flex"
+          className="btn btn-ghost hidden! max-[840px]:inline-flex!"
           onClick={() => setOpen(true)}
           aria-label="Menú"
         >
