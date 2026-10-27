@@ -1372,3 +1372,37 @@ a { color: inherit; text-decoration: none; }
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 }
 @keyframes spinpix { to { transform: rotate(360deg); } }
+
+/* ===== ACERCA DE (spec 03) — solo lo que Tailwind no expresa ===== */
+.div-pixels { display: flex; gap: 4px; }
+.div-pixels span { width: 6px; height: 6px; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); animation: pxblink 2.4s steps(2) infinite; }
+.div-pixels span:nth-child(3n) { background: var(--magenta); box-shadow: 0 0 6px var(--magenta); }
+.div-pixels span:nth-child(5n) { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+@keyframes pxblink { 50% { opacity: 0.2; } }
+
+.tip-led { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+.tip-led.y { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+.tip-led.m { background: var(--magenta); box-shadow: 0 0 6px var(--magenta); }
+
+.contact-form.shake { animation: shake 0.4s; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); } 40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); } 80% { transform: translateX(4px); }
+}
+
+.terminal-success { background: #000; border: 1px solid var(--green); box-shadow: 0 0 22px rgba(0,255,136,0.25); font-family: var(--mono); overflow: hidden; }
+.terminal-success.error { border-color: var(--magenta); box-shadow: 0 0 22px rgba(255,0,110,0.25); }
+.term-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #0a0a0f; border-bottom: 1px solid var(--line); }
+.term-bar .dot { width: 10px; height: 10px; border-radius: 50%; }
+.term-bar .dot.r { background: #ff5f56; }
+.term-bar .dot.y { background: #ffbd2e; }
+.term-bar .dot.g { background: #27c93f; }
+.term-bar .term-title { margin-left: 8px; font-family: var(--pixel); font-size: 9px; color: var(--ink-faint); letter-spacing: 0.14em; }
+.term-body { padding: 18px 18px 22px; font-size: 13px; line-height: 1.8; }
+.term-body .line { color: var(--green); }
+.term-body .prompt { color: var(--cyan); margin-right: 8px; }
+.term-body .dim { color: var(--ink-dim); }
+.term-body .success { margin-top: 12px; color: var(--green); text-shadow: 0 0 6px rgba(0,255,136,0.45); font-weight: 700; white-space: pre-wrap; }
+.term-body .err { color: var(--magenta); text-shadow: 0 0 6px rgba(255,0,110,0.45); }
+.term-body .caret { animation: blink 1s steps(1) infinite; }
