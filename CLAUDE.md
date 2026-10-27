@@ -8,11 +8,14 @@ Arcade Vault: a platform to play games online and compete for the highest score.
 
 No test runner is configured.
 
+A project hook (`.claude/settings.json` → `.claude/hooks/lint-format.sh`, `PostToolUse` on `Write|Edit`) runs Prettier and then `eslint --fix` on every `.ts/.tsx/.js/.jsx/.mjs` file Claude writes, and Prettier on `.md` files. It skips `node_modules/`, `.next/` and `references/`; if ESLint leaves errors it exits with code 2 so they are fed back to Claude. Prettier uses its defaults (`.prettierrc.json`, `.prettierignore`).
+
 ## Next.js version warning
 
 Next.js 16.4.2 with React 19.3 — newer than typical training data. `AGENTS.md` requires reading the relevant guide in `node_modules/next/dist/docs/` (`01-app`, `02-pages`, `03-architecture`, `04-community`) before writing Next.js code, and heeding deprecation notices.
 
 ## Skills
+
 Usa siempre /frontend-design para diseñar la interfaz de usuario
 
 ## Architecture
