@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { Leaderboard } from "@/app/_components/leaderboard";
 import { GAMES } from "@/app/data/games";
-import { seededScores } from "@/app/data/scores";
+import { getGameBoard } from "@/lib/leaderboard";
 
 export function generateStaticParams() {
   return GAMES.map((g) => ({ id: g.id }));
@@ -13,7 +14,6 @@ export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]
   const game = GAMES.find((g) => g.id === id);
   if (!game) notFound();
 
-  const scores = seededScores(id.length * 17 + 3, 10);
   const tags = [game.cat, "1 JUGADOR", "TECLADO / TÁCTIL", "RETRO 1985"];
 
   return (
@@ -62,10 +62,21 @@ export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]
       </div>
 
       <aside>
-        <Leaderboard scores={scores} />
+        <Suspense fallback={<LeaderboardSkeleton />}>
+          <GameLeaderboard id={id} />
+        </Suspense>
       </aside>
     </div>
   );
+}
+
+async function GameLeaderboard({ id }: { id: string }) {
+  const scores = await getGameBoard(id);
+  return <Leaderboard scores={scores} />;
+}
+
+function LeaderboardSkeleton() {
+  return <div aria-hidden className="h-96 animate-pulse border border-line bg-bg-2" />;
 }
 
 function Stat({ label, value, className = "text-cyan [text-shadow:0_0_6px_rgba(0,245,255,0.5)]" }: {
