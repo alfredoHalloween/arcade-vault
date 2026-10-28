@@ -87,6 +87,7 @@ export type Database = {
           games_played: number | null;
           player_name: string | null;
           total_score: number | null;
+          updated_at: string | null;
         };
         Relationships: [];
       };
