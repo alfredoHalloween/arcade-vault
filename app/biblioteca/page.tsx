@@ -1,5 +1,5 @@
+import { GAMES } from "../data/games";
 import { LibraryBrowser } from "../_components/library-browser";
-
 export default function BibliotecaPage() {
   return (
     <div className="fade-in">
@@ -11,7 +11,7 @@ export default function BibliotecaPage() {
           INSERTA UNA MONEDA PARA JUGAR <span className="blink">_</span>
         </div>
       </section>
-      <LibraryBrowser />
+      <LibraryBrowser games={GAMES} />
     </div>
   );
 }
