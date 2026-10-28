@@ -3,8 +3,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Game } from "@/app/data/types";
 import { PLAYABLE_GAMES } from "./games/registry";
+import { submitScore } from "@/app/juegos/[id]/jugar/actions";
 import { useSession } from "./session-provider";
+import { usePlayerName } from "./use-player-name";
 const INITIAL_LIVES = 3;
+const MAX_NAME = 16;
 const POINTS_PER_LEVEL = 2500;
 function HudStat({
   label,
@@ -30,14 +33,17 @@ export function GamePlayer({ game }: { game: Game }) {
   const [paused, setPaused] = useState(false);
   const [over, setOver] = useState(false);
   const [saved, setSaved] = useState(false);
-  // `null` until the player edits it, so the session name shows up once it has loaded.
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const { rememberedName, rememberName } = usePlayerName();
+  // `null` until the player edits it, so the remembered or session name shows up once it has loaded.
   const [typedName, setTypedName] = useState<string | null>(null);
   // Real games report lives and level themselves; changing `runKey` remounts the canvas.
   const [gameLives, setGameLives] = useState(INITIAL_LIVES);
   const [gameLevel, setGameLevel] = useState(1);
   const [runKey, setRunKey] = useState(0);
   const GameCanvas = PLAYABLE_GAMES[game.id];
-  const name = typedName ?? user?.name ?? "INVITADO";
+  const name = typedName ?? rememberedName ?? user?.name ?? "INVITADO";
   const lives = GameCanvas ? gameLives : INITIAL_LIVES;
   const level = GameCanvas
     ? gameLevel
@@ -62,10 +68,32 @@ export function GamePlayer({ game }: { game: Game }) {
     setPaused(false);
     setOver(false);
     setSaved(false);
+    setSaving(false);
+    setSaveError(null);
   };
-  const save = () => {
-    saveScore({ game: game.id, score, name });
-    setSaved(true);
+  const save = async () => {
+    const finalName = name.trim().toUpperCase();
+    if (!GameCanvas) {
+      saveScore({ game: game.id, score, name });
+      if (finalName) rememberName(finalName);
+      setSaved(true);
+      return;
+    }
+    setSaving(true);
+    setSaveError(null);
+    try {
+      const result = await submitScore(game.id, finalName, score);
+      if (result.ok) {
+        rememberName(finalName);
+        setSaved(true);
+      } else {
+        setSaveError(result.error ?? "No se pudo guardar la puntuación.");
+      }
+    } catch {
+      setSaveError("No se pudo guardar la puntuación. Inténtalo de nuevo.");
+    } finally {
+      setSaving(false);
+    }
   };
   return (
     <div className="fade-in mx-auto my-8 max-w-275 px-6 pb-16 max-[720px]:px-4 max-[720px]:pb-8">
@@ -170,24 +198,51 @@ export function GamePlayer({ game }: { game: Game }) {
               {score.toLocaleString("es-ES")}
             </div>
             {!saved ? (
-              <div className="mt-5.5 mb-3 flex gap-2">
-                <input
-                  value={name}
-                  onChange={(e) =>
-                    setTypedName(e.target.value.toUpperCase().slice(0, 10))
-                  }
-                  placeholder="TUS INICIALES"
-                  aria-label="Tus iniciales"
-                  className="h-11 min-w-0 flex-1 border border-line bg-bg px-3 outline-0 focus:border-cyan focus:shadow-[0_0_10px_rgba(0,245,255,0.35)]"
-                />
-                <button type="button" className="btn btn-yellow" onClick={save}>
-                  GUARDAR PUNTUACIÓN
-                </button>
-              </div>
+              <>
+                <div className="mt-5.5 mb-3 flex gap-2">
+                  <input
+                    value={name}
+                    onChange={(e) =>
+                      setTypedName(
+                        e.target.value.toUpperCase().slice(0, MAX_NAME),
+                      )
+                    }
+                    maxLength={MAX_NAME}
+                    placeholder="TUS INICIALES"
+                    aria-label="Tus iniciales"
+                    className="h-11 min-w-0 flex-1 border border-line bg-bg px-3 outline-0 focus:border-cyan focus:shadow-[0_0_10px_rgba(0,245,255,0.35)]"
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-yellow"
+                    onClick={save}
+                    disabled={saving}
+                  >
+                    {saving ? "GUARDANDO…" : "GUARDAR PUNTUACIÓN"}
+                  </button>
+                </div>
+                {saveError && (
+                  <div
+                    role="alert"
+                    className="mb-3 text-[11px] tracking-[0.1em] text-magenta"
+                  >
+                    {saveError}
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="mt-3.5 inline-block w-0 animate-[typewriter_1.6s_steps(22)_forwards,caret_0.8s_steps(1)_infinite] overflow-hidden border-r-2 border-green font-pixel text-[11px] whitespace-nowrap text-green [text-shadow:0_0_8px_var(--green)]">
-                ▸ PUNTUACIÓN GUARDADA_
-              </div>
+              <>
+                <div className="mt-3.5 inline-block w-0 animate-[typewriter_1.6s_steps(22)_forwards,caret_0.8s_steps(1)_infinite] overflow-hidden border-r-2 border-green font-pixel text-[11px] whitespace-nowrap text-green [text-shadow:0_0_8px_var(--green)]">
+                  ▸ PUNTUACIÓN GUARDADA_
+                </div>
+                {GameCanvas && (
+                  <div className="mt-3">
+                    <Link href="/salon" className="btn btn-ghost">
+                      VER SALÓN DE LA FAMA
+                    </Link>
+                  </div>
+                )}
+              </>
             )}
             <div className="mt-4.5 flex flex-wrap justify-center gap-2.5">
               <button type="button" className="btn" onClick={restart}>
