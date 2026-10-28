@@ -1,6 +1,6 @@
 # SPEC 07 — `/biblioteca` solo muestra los juegos almacenados en la base de datos
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 01 (`01-mvp-pantallas-visuales.md`), SPEC 04 (`04-integracion-supabase.md`), SPEC 06 (`06-leaderboard-y-tabla-games.md`)
 > **Fecha:** 2026-10-28
 > **Objetivo:** Hacer que `/biblioteca` muestre únicamente los juegos del catálogo local (`app/data/games.ts`) cuyo `id` exista en la tabla `games` de Supabase, con estados de vacío y de error.
@@ -73,19 +73,19 @@ Cada paso deja la app ejecutable (`npm run dev`) y se puede commitear solo.
 
 ## Criterios de aceptación
 
-- [ ] `npx tsc --noEmit` y `npx eslint app lib` terminan sin errores.
-- [ ] Con `games` conteniendo solo `rocas`, `/biblioteca` muestra exactamente una tarjeta (ROCAS) y ninguno de los siete placeholders.
-- [ ] Tras insertar `serpentina` en `games`, `/biblioteca` muestra ROCAS y SERPENTINA en el orden del catálogo local, sin tocar código.
-- [ ] Un `id` insertado en `games` que no existe en `app/data/games.ts` no rompe la página ni aparece como tarjeta.
-- [ ] Con `games` vacía, `/biblioteca` muestra `AÚN NO HAY JUEGOS EN EL VAULT`, sin tarjetas y sin errores en la consola.
-- [ ] Si la consulta a Supabase falla (p. ej. URL de Supabase inválida), `/biblioteca` responde 200 y muestra `NO SE PUDO CARGAR LA BIBLIOTECA`; el detalle solo aparece en el log del servidor.
-- [ ] El buscador y el filtro por categoría siguen funcionando sobre los juegos mostrados; una búsqueda sin coincidencias sigue mostrando `NO HAY RESULTADOS`.
-- [ ] Mientras carga se ve el esqueleto bajo el título, que no desaparece ni parpadea.
-- [ ] `/`, `/juegos/serpentina`, `/juegos/serpentina/jugar`, `/salon` y `/acerca` siguen funcionando igual que antes.
-- [ ] `/biblioteca` responde 200 sin errores ni avisos de hidratación en la consola.
-- [ ] Al terminar las pruebas, `games` contiene exactamente una fila (`rocas`).
-- [ ] Ningún archivo importa `createClient` de `@supabase/supabase-js`.
-- [ ] `CLAUDE.md` documenta cómo decide `/biblioteca` qué juegos muestra.
+- [X] `npx tsc --noEmit` y `npx eslint app lib` terminan sin errores.
+- [X] Con `games` conteniendo solo `rocas`, `/biblioteca` muestra exactamente una tarjeta (ROCAS) y ninguno de los siete placeholders.
+- [X] Tras insertar `serpentina` en `games`, `/biblioteca` muestra ROCAS y SERPENTINA en el orden del catálogo local, sin tocar código.
+- [X] Un `id` insertado en `games` que no existe en `app/data/games.ts` no rompe la página ni aparece como tarjeta.
+- [X] Con `games` vacía, `/biblioteca` muestra `AÚN NO HAY JUEGOS EN EL VAULT`, sin tarjetas y sin errores en la consola.
+- [X] Si la consulta a Supabase falla (p. ej. URL de Supabase inválida), `/biblioteca` responde 200 y muestra `NO SE PUDO CARGAR LA BIBLIOTECA`; el detalle solo aparece en el log del servidor.
+- [X] El buscador y el filtro por categoría siguen funcionando sobre los juegos mostrados; una búsqueda sin coincidencias sigue mostrando `NO HAY RESULTADOS`.
+- [X] Mientras carga se ve el esqueleto bajo el título, que no desaparece ni parpadea.
+- [X] `/`, `/juegos/serpentina`, `/juegos/serpentina/jugar`, `/salon` y `/acerca` siguen funcionando igual que antes.
+- [X] `/biblioteca` responde 200 sin errores ni avisos de hidratación en la consola.
+- [X] Al terminar las pruebas, `games` contiene exactamente una fila (`rocas`).
+- [X] Ningún archivo importa `createClient` de `@supabase/supabase-js`.
+- [X] `CLAUDE.md` documenta cómo decide `/biblioteca` qué juegos muestra.
 
 ---
 
