@@ -1,6 +1,6 @@
 # SPEC 06 — Tablas `games` y `scores` en Supabase y leaderboard real (global y por juego)
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 01 (`01-mvp-pantallas-visuales.md`), SPEC 04 (`04-integracion-supabase.md`), SPEC 05 (`05-juego-rocas-asteroides.md`)
 > **Fecha:** 2026-10-28
 > **Objetivo:** Crear en Supabase las tablas `games` (referencia de los juegos con ranking, hoy solo `rocas`) y `scores`, guardar allí las puntuaciones de `rocas` y conectar `/salon` y el top de `/juegos/[id]` a un leaderboard real, global (suma de la mejor marca por juego) y por juego (top 10).
@@ -146,30 +146,30 @@ Cada paso deja la app ejecutable (`npm run dev`) y se puede commitear solo.
 
 ## Criterios de aceptación
 
-- [ ] `npx tsc --noEmit` y `npx eslint app lib` terminan sin errores.
-- [ ] `list_tables` del MCP muestra únicamente las tablas `games` y `scores`, ambas sin RLS activado; `games` contiene exactamente una fila (`rocas`) y `scores.game_id` tiene clave foránea a `games.id`.
-- [ ] La migración no contiene `enable row level security`, `create policy` ni `grant`/`revoke`.
-- [ ] No existe `lib/supabase/admin.ts`, ni `SUPABASE_SECRET_KEY` en `.env.local`, `.env.example` o el código.
-- [ ] `submitScore` rechaza (sin insertar) un `gameId` que no existe en `games`, un nombre vacío o de más de 16 caracteres, y una puntuación negativa, no entera o mayor que 9.999.999.
-- [ ] `submitScore` guarda el nombre en mayúsculas y recortado.
-- [ ] Jugar `rocas`, perder y pulsar GUARDAR PUNTUACIÓN inserta una fila en `scores` con `game_id = 'rocas'` y la puntuación final, y el modal muestra el estado guardado con un enlace a `/salon`.
-- [ ] Si `submitScore` falla (p. ej. sin conexión a Supabase), el modal muestra un mensaje de error genérico, no pierde la puntuación y permite reintentar; el detalle solo aparece en el log del servidor.
-- [ ] Guardar dos partidas del mismo jugador en `rocas` crea dos filas en `scores`, pero el jugador aparece una sola vez en el ranking de `rocas`, con su marca más alta.
-- [ ] La pestaña GLOBAL de `/salon` muestra por jugador la suma de sus mejores marcas por juego; con solo `rocas` coincide con el ranking de ROCAS.
-- [ ] `/salon` muestra como máximo 10 filas por pestaña, ordenadas por puntuación descendente con desempate por antigüedad, y las pestañas son GLOBAL y ROCAS (no aparecen los juegos que no están en `games`).
-- [ ] Con 0 filas, `/salon` (en GLOBAL y ROCAS) y `/juegos/rocas` muestran el texto "Sé el primero en entrar al salón de la fama", sin podio, sin filas y sin nombres ni puntuaciones inventados, y sin errores en la consola.
-- [ ] Con 1 o 2 filas el podio no rompe el diseño.
-- [ ] En `/salon` no hay pestañas de juegos que no sean reales y jugables (solo GLOBAL y ROCAS).
-- [ ] Tras guardar con un nombre, `localStorage` contiene `av_player_name` con ese nombre; al terminar otra partida el campo del modal ya viene relleno con él y GUARDAR PUNTUACIÓN lo guarda en `scores.player_name` sin escribir nada.
-- [ ] Si el jugador cambia el nombre en el modal y guarda, el nombre nuevo se guarda en la base y pasa a ser el recordado.
-- [ ] Con `localStorage` vacío el campo muestra el nombre de la sesión o `INVITADO`, y recargar la página no produce avisos de hidratación.
-- [ ] `/juegos/rocas` muestra el top 10 real; `/juegos/serpentina` muestra "sin puntuaciones reales todavía".
-- [ ] `/juegos/serpentina/jugar` sigue guardando en `av_scores` y no escribe en Supabase.
-- [ ] Ningún archivo importa `createClient` de `@supabase/supabase-js`.
-- [ ] `/salon`, `/juegos/rocas` y `/juegos/rocas/jugar` responden 200 sin errores ni avisos de hidratación en la consola.
-- [ ] A 375 px, `/salon` no tiene scroll horizontal.
-- [ ] `seededScores` y `PLAYERS` ya no existen si nadie los importa, y `/biblioteca`, `/` y `/acerca` siguen funcionando igual.
-- [ ] `CLAUDE.md` documenta las tablas `games` y `scores`, las vistas, que RLS está pendiente y el flujo de guardado.
+- [X] `npx tsc --noEmit` y `npx eslint app lib` terminan sin errores.
+- [X] `list_tables` del MCP muestra únicamente las tablas `games` y `scores`, ambas sin RLS activado; `games` contiene exactamente una fila (`rocas`) y `scores.game_id` tiene clave foránea a `games.id`.
+- [X] La migración no contiene `enable row level security`, `create policy` ni `grant`/`revoke`.
+- [X] No existe `lib/supabase/admin.ts`, ni `SUPABASE_SECRET_KEY` en `.env.local`, `.env.example` o el código.
+- [X] `submitScore` rechaza (sin insertar) un `gameId` que no existe en `games`, un nombre vacío o de más de 16 caracteres, y una puntuación negativa, no entera o mayor que 9.999.999.
+- [X] `submitScore` guarda el nombre en mayúsculas y recortado.
+- [X] Jugar `rocas`, perder y pulsar GUARDAR PUNTUACIÓN inserta una fila en `scores` con `game_id = 'rocas'` y la puntuación final, y el modal muestra el estado guardado con un enlace a `/salon`.
+- [X] Si `submitScore` falla (p. ej. sin conexión a Supabase), el modal muestra un mensaje de error genérico, no pierde la puntuación y permite reintentar; el detalle solo aparece en el log del servidor.
+- [X] Guardar dos partidas del mismo jugador en `rocas` crea dos filas en `scores`, pero el jugador aparece una sola vez en el ranking de `rocas`, con su marca más alta.
+- [X] La pestaña GLOBAL de `/salon` muestra por jugador la suma de sus mejores marcas por juego; con solo `rocas` coincide con el ranking de ROCAS.
+- [X] `/salon` muestra como máximo 10 filas por pestaña, ordenadas por puntuación descendente con desempate por antigüedad, y las pestañas son GLOBAL y ROCAS (no aparecen los juegos que no están en `games`).
+- [X] Con 0 filas, `/salon` (en GLOBAL y ROCAS) y `/juegos/rocas` muestran el texto "Sé el primero en entrar al salón de la fama", sin podio, sin filas y sin nombres ni puntuaciones inventados, y sin errores en la consola.
+- [X] Con 1 o 2 filas el podio no rompe el diseño.
+- [X] En `/salon` no hay pestañas de juegos que no sean reales y jugables (solo GLOBAL y ROCAS).
+- [X] Tras guardar con un nombre, `localStorage` contiene `av_player_name` con ese nombre; al terminar otra partida el campo del modal ya viene relleno con él y GUARDAR PUNTUACIÓN lo guarda en `scores.player_name` sin escribir nada.
+- [X] Si el jugador cambia el nombre en el modal y guarda, el nombre nuevo se guarda en la base y pasa a ser el recordado.
+- [X] Con `localStorage` vacío el campo muestra el nombre de la sesión o `INVITADO`, y recargar la página no produce avisos de hidratación.
+- [X] `/juegos/rocas` muestra el top 10 real; `/juegos/serpentina` muestra "sin puntuaciones reales todavía".
+- [X] `/juegos/serpentina/jugar` sigue guardando en `av_scores` y no escribe en Supabase.
+- [X] Ningún archivo importa `createClient` de `@supabase/supabase-js`.
+- [X] `/salon`, `/juegos/rocas` y `/juegos/rocas/jugar` responden 200 sin errores ni avisos de hidratación en la consola.
+- [X] A 375 px, `/salon` no tiene scroll horizontal.
+- [X] `seededScores` y `PLAYERS` ya no existen si nadie los importa, y `/biblioteca`, `/` y `/acerca` siguen funcionando igual.
+- [X] `CLAUDE.md` documenta las tablas `games` y `scores`, las vistas, que RLS está pendiente y el flujo de guardado.
 
 ---
 
