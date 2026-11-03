@@ -74,7 +74,7 @@ export function createAsteroidsGame(
     }
     if (emitted.lives !== lives) {
       emitted.lives = lives;
-      callbacks.onLives(lives);
+      callbacks.onLives?.(lives);
     }
     if (emitted.level !== level) {
       emitted.level = level;
