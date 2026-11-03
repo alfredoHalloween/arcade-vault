@@ -9,7 +9,28 @@ export function generateStaticParams() {
   return GAMES.map((g) => ({ id: g.id }));
 }
 
-export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]">) {
+// `params` se lee dentro de <Suspense> para que el App Shell no dependa de la URL.
+export default function GameDetailPage({ params }: PageProps<"/juegos/[id]">) {
+  return (
+    <Suspense fallback={<DetailSkeleton />}>
+      <GameDetail params={params} />
+    </Suspense>
+  );
+}
+
+function DetailSkeleton() {
+  return (
+    <div
+      aria-hidden
+      className="mx-auto my-12 grid max-w-330 animate-pulse grid-cols-[1.4fr_1fr] gap-8 px-8 max-[900px]:grid-cols-1 max-[720px]:my-6 max-[720px]:px-4"
+    >
+      <div className="aspect-16/10 border border-line bg-bg-2" />
+      <div className="h-96 border border-line bg-bg-2" />
+    </div>
+  );
+}
+
+async function GameDetail({ params }: { params: PageProps<"/juegos/[id]">["params"] }) {
   const { id } = await params;
   const game = GAMES.find((g) => g.id === id);
   if (!game) notFound();
@@ -71,8 +92,18 @@ export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]
 }
 
 async function GameLeaderboard({ id }: { id: string }) {
-  const scores = await getGameBoard(id);
-  return <Leaderboard scores={scores} />;
+  let scores: Awaited<ReturnType<typeof getGameBoard>> = [];
+  let failed = false;
+  try {
+    scores = await getGameBoard(id);
+  } catch (error) {
+    // Un fallo de Supabase no debe romper la ficha. Si la petición se abortó
+    // porque Next canceló el render (navegación o prefetch abandonados), nadie
+    // verá el resultado: no se registra como error.
+    if (!/abort/i.test(String(error))) console.error(error);
+    failed = true;
+  }
+  return <Leaderboard scores={scores} error={failed} />;
 }
 
 function LeaderboardSkeleton() {
