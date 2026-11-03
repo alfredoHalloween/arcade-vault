@@ -1,15 +1,15 @@
-# SPEC 08 — Juego real: CAÍDA (Tetris) con leaderboard y entrada en la biblioteca
+# SPEC 08 — Juego real: TETRIS (id `tetris`) con leaderboard y entrada en la biblioteca
 
 > **Estado:** Aprobado
 > **Depende de:** SPEC 05 (`05-juego-rocas-asteroides.md`), SPEC 06 (`06-leaderboard-y-tabla-games.md`), SPEC 07 (`07-biblioteca-juegos-en-base-de-datos.md`)
 > **Fecha:** 2026-11-03
-> **Objetivo:** Portar el Tetris de `references/started-games/03-tetris/` como el juego real de la entrada `caida`, jugable en `/juegos/caida/jugar` dentro de `GamePlayer`, con su fila en `games` para que tenga ranking en `/salon`, top en `/juegos/caida` y tarjeta en `/biblioteca`.
+> **Objetivo:** Portar el Tetris de `references/started-games/03-tetris/` como el juego real de la entrada `caida`, renombrada a `tetris`, jugable en `/juegos/tetris/jugar` dentro de `GamePlayer`, con su fila en `games` para que tenga ranking en `/salon`, top en `/juegos/tetris` y tarjeta en `/biblioteca`.
 
 ---
 
 ## Por qué existe esta spec
 
-`caida` es hoy un placeholder con puntuación simulada. Es el segundo juego real tras `rocas` y el primero que no encaja del todo en el contrato de la SPEC 05: **no tiene vidas** y su tablero es **vertical (10×20)** dentro de un marco 4:3. Por eso esta spec, además de portar el juego, hace opcional `onLives` en el contrato y fija cómo se encaja un juego vertical. El original es JavaScript plano con globales, DOM propio (HUD, overlay de PAUSA/GAME OVER, toggle de tema) y `localStorage` propio, así que no se puede copiar tal cual.
+La entrada `caida` es hoy un placeholder con puntuación simulada. Es el segundo juego real tras `rocas` y el primero que no encaja del todo en el contrato de la SPEC 05: **no tiene vidas** y su tablero es **vertical (10×20)** dentro de un marco 4:3. Por eso esta spec, además de portar el juego, hace opcional `onLives` en el contrato y fija cómo se encaja un juego vertical. El original es JavaScript plano con globales, DOM propio (HUD, overlay de PAUSA/GAME OVER, toggle de tema) y `localStorage` propio, así que no se puede copiar tal cual.
 
 Inventario del original (`game.js`, 332 líneas):
 
@@ -32,10 +32,10 @@ Inventario del original (`game.js`, 332 líneas):
 - Estilo con los **colores originales** de las piezas (`#4dd0e1`, `#ffd54f`, `#ba68c8`, `#81c784`, `#e57373`, `#90caf9`, `#ffb74d`, `#9e9e9e`) y su brillo superior de 4 px; sin glow. Fondo y líneas de la rejilla transparentes/tenues sobre la pantalla CRT de la plataforma (la rejilla usa un color fijo con baja opacidad, porque el original lo tomaba de la variable CSS `--grid-line` de su propio tema).
 - Código en `app/_components/games/tetris/`: `engine.ts`, `entities.ts` (piezas y tablero), `input.ts`, `constants.ts`, `utils.ts` y `tetris-canvas.tsx`. Nada se importa de `references/`.
 - Encaje 4:3: coordenadas lógicas **800×600**. El tablero ocupa 300×600 (bloque de 30) a la izquierda-centro; a su derecha el canvas dibuja un panel con la pieza siguiente (rejilla 4×4 de bloques de 30) y el contador de **LÍNEAS**. Puntuación y nivel van al HUD de React. Posiciones exactas: se definen en `constants.ts` y se comprueban a ojo en el paso 8.
-- Registrar `caida: TetrisCanvas` en `app/_components/games/registry.ts`.
+- Registrar `tetris: TetrisCanvas` en `app/_components/games/registry.ts`.
 - Contrato: `onLives` pasa a ser **opcional** en `GameCanvasProps`; `GamePlayer` muestra `—` en vidas cuando el juego real no las reporta, sin cambiar el aspecto del HUD de `rocas` (vidas siguen como `♥ ♥ ♥`).
-- Migración `add_game_caida` en Supabase con el MCP: una fila en `games` (`caida`, `CAÍDA`). Sin cambios de esquema.
-- Ajustar `long`/`short` de `caida` en `app/data/games.ts` solo si prometen algo que el port no tiene (hoy dicen "cada 10 líneas", que coincide; ver paso 2).
+- Migración `add_game_tetris` en Supabase con el MCP: una fila en `games` (`tetris`, `TETRIS`). Sin cambios de esquema.
+- Renombrar la entrada `caida` de `app/data/games.ts`: `id` de `caida` a `tetris` y `title` de `CAÍDA` a `TETRIS` (las rutas pasan a `/juegos/tetris`; `cover-tetro` y el resto de campos no cambian), buscando y actualizando cualquier otra referencia al `id` antiguo en `app/`, y ajustar `long`/`short` solo si prometen algo que el port no tiene (hoy dicen "cada 10 líneas", que coincide; ver paso 2).
 - Actualizar `CLAUDE.md`.
 
 **Fuera de alcance (para futuras specs):**
@@ -53,13 +53,13 @@ Inventario del original (`game.js`, 332 líneas):
 
 ## Modelo de datos
 
-Migración `add_game_caida` (aplicada con `apply_migration`; el SQL queda documentado aquí porque no existe carpeta `supabase/`):
+Migración `add_game_tetris` (aplicada con `apply_migration`; el SQL queda documentado aquí porque no existe carpeta `supabase/`):
 
 ```sql
-insert into public.games (id, title) values ('caida', 'CAÍDA');
+insert into public.games (id, title) values ('tetris', 'TETRIS');
 ```
 
-`caida` ya existe en `app/data/games.ts`, así que `/biblioteca` la mostrará. No hay cambios de esquema, por lo que no se regenera `database.types.ts`.
+La entrada ya existe en `app/data/games.ts` (como `caida` hasta el paso 2, luego `tetris`), así que `/biblioteca` la mostrará. No hay cambios de esquema, por lo que no se regenera `database.types.ts`.
 
 Contrato (cambio en `app/_components/games/types.ts`):
 
@@ -109,15 +109,15 @@ Convenciones:
 Cada paso deja la app ejecutable (`npm run dev`) y se puede commitear solo.
 
 1. Leer en `node_modules/next/dist/docs/` la guía de Client Components, y en `app/globals.css` los estilos `.crt`, `.crt-screen` y `.game-arena`. Releer `app/_components/game-player.tsx` por dentro. Sin cambios en el repo.
-2. Contrato opcional: `onLives?` en `types.ts` y ajustar `GamePlayer` para que, con un juego real que no reporta vidas, el HUD muestre `—` (distinguiéndolo de 0 vidas) y siga mostrando `♥ ♥ ♥` en `rocas`. Revisar `long`/`short` de `caida` y ajustarlos solo si prometen algo que el port no tiene. Verificación: `npx tsc --noEmit`; `/juegos/rocas/jugar` se ve igual y `/juegos/caida` muestra el texto vigente.
+2. Contrato opcional: `onLives?` en `types.ts` y ajustar `GamePlayer` para que, con un juego real que no reporta vidas, el HUD muestre `—` (distinguiéndolo de 0 vidas) y siga mostrando `♥ ♥ ♥` en `rocas`. Renombrar en `app/data/games.ts` el `id` de `caida` a `tetris` y el `title` de `CAÍDA` a `TETRIS` (y cualquier otro texto fijo que lo nombre; `grep -rn "caida" app lib` no debe dejar referencias) y revisar `long`/`short`, ajustándolos solo si prometen algo que el port no tiene. Verificación: `npx tsc --noEmit`; `/juegos/rocas/jugar` se ve igual y `/juegos/tetris` muestra el título TETRIS y el texto vigente.
 3. Crear `tetris/constants.ts` (`COLS`, `ROWS`, `BLOCK`, ancho/alto lógico, `COLORS`, `PIECES`, `LINE_SCORES`, tope de puntuación, posiciones del panel) y `tetris/utils.ts` (`createBoard`, `rotateCW`). Verificación: `npx tsc --noEmit`.
 4. Crear `tetris/entities.ts`: `randomPiece`, `collide`, `tryRotate` (kicks `[0,−1,1,−2,2]`), `merge`, `clearLines` y `ghostY`, como funciones puras sobre el estado del tablero. Verificación: `npx tsc --noEmit` y `npx eslint app`.
 5. Crear `tetris/input.ts`: `createInput(onKey)` que escucha `keydown` (con `e.repeat` nativo) y expone `setActive(boolean)`/`destroy()`. Teclas: ← → ↓ ↑ X Espacio. `preventDefault` solo de ← → ↓ ↑ y Espacio y solo con el juego activo (no en pausa) y el foco fuera de `input`/`textarea`/`select`. Sin `P` ni `Esc`. Verificación: `npx tsc --noEmit` y `npx eslint app`.
 6. Crear `tetris/engine.ts` con `createTetrisGame`: bucle `requestAnimationFrame`, acumulador de caída, `lockPiece`, `spawn` con fin de partida, puntuación y nivel, dibujo (rejilla, bloques con brillo, fantasma a 0,2, pieza actual, panel de siguiente y líneas), `setPaused` (la lógica se congela pero se sigue dibujando) y `destroy` (cancela el bucle y quita listeners). Callbacks solo al cambiar el valor. Verificación: `npx tsc --noEmit` y `npx eslint app`.
-7. Crear `tetris/tetris-canvas.tsx` copiando el patrón de `asteroids-canvas.tsx` (refs para `paused` y callbacks, motor creado una vez, `ResizeObserver` con 800×600 y `devicePixelRatio`, `aria-label="Juego CAÍDA"`). Verificación: `npx tsc --noEmit`.
-8. Registrar `caida` en `registry.ts`. Verificación: `/juegos/caida/jugar` es jugable dentro del CRT; `/juegos/serpentina/jugar` sigue con el placeholder; a 375 px no hay scroll horizontal.
-9. Aplicar la migración `add_game_caida` con el MCP. Verificación: `execute_sql` muestra `games` con exactamente `rocas` y `caida`; `/biblioteca` muestra ROCAS y CAÍDA; `/salon` muestra las pestañas GLOBAL, ROCAS y CAÍDA.
-10. Prueba de extremo a extremo y limpieza: jugar `caida`, perder, guardar, ver la fila en `scores` y en `/salon` y `/juegos/caida`, y borrar después las filas de prueba (`delete from scores where game_id = 'caida'`). Verificación: `scores` sin filas de prueba de `caida`.
+7. Crear `tetris/tetris-canvas.tsx` copiando el patrón de `asteroids-canvas.tsx` (refs para `paused` y callbacks, motor creado una vez, `ResizeObserver` con 800×600 y `devicePixelRatio`, `aria-label="Juego TETRIS"`). Verificación: `npx tsc --noEmit`.
+8. Registrar `tetris` en `registry.ts`. Verificación: `/juegos/tetris/jugar` es jugable dentro del CRT; `/juegos/serpentina/jugar` sigue con el placeholder; a 375 px no hay scroll horizontal.
+9. Aplicar la migración `add_game_tetris` con el MCP. Verificación: `execute_sql` muestra `games` con exactamente `rocas` y `tetris`; `/biblioteca` muestra ROCAS y TETRIS; `/salon` muestra las pestañas GLOBAL, ROCAS y TETRIS.
+10. Prueba de extremo a extremo y limpieza: jugar `tetris`, perder, guardar, ver la fila en `scores` y en `/salon` y `/juegos/tetris`, y borrar después las filas de prueba (`delete from scores where game_id = 'tetris'`). Verificación: `scores` sin filas de prueba de `tetris`.
 11. Actualizar `CLAUDE.md` (juego jugable, carpeta `tetris/`, `onLives?` opcional y HUD `—`, `games` con dos filas, qué sigue siendo placeholder). Verificación: el documento refleja todo lo anterior.
 
 ---
@@ -125,7 +125,7 @@ Cada paso deja la app ejecutable (`npm run dev`) y se puede commitear solo.
 ## Criterios de aceptación
 
 - [ ] `npx tsc --noEmit` y `npx eslint app lib` terminan sin errores.
-- [ ] `/juegos/caida/jugar` responde 200, muestra el canvas dentro de la pantalla CRT y la consola no muestra errores ni avisos de hidratación.
+- [ ] `/juegos/tetris/jugar` responde 200, muestra el canvas dentro de la pantalla CRT y la consola no muestra errores ni avisos de hidratación.
 - [ ] El tablero es de 10×20 y caen las 8 piezas (I, O, T, S, Z, J, L y la N hueca de 3×3), sorteadas de forma uniforme con repetición, con los colores originales del inventario.
 - [ ] ← y → mueven la pieza una columna sin atravesar paredes ni bloques; mantener pulsada la tecla repite con la repetición nativa del teclado.
 - [ ] ↑ y X rotan en sentido horario; junto a una pared la rotación intenta los desplazamientos `0, −1, +1, −2, +2` y se descarta si ninguno cabe.
@@ -144,20 +144,20 @@ Cada paso deja la app ejecutable (`npm run dev`) y se puede commitear solo.
 - [ ] SALIR detiene el bucle y quita los listeners: tras volver a `/biblioteca`, las flechas y Espacio vuelven a hacer scroll.
 - [ ] A 375 px el canvas ocupa el ancho disponible, mantiene la proporción 4:3 sin scroll horizontal y los bloques se ven nítidos con `devicePixelRatio` alto.
 - [ ] La puntuación notificada nunca supera 9.999.999.
-- [ ] La migración `add_game_caida` solo inserta la fila de `caida` en `games`; `games` contiene exactamente `rocas` y `caida`, sin filas de relleno de otros juegos.
-- [ ] GUARDAR PUNTUACIÓN inserta en `scores` una fila con `game_id = 'caida'`, la puntuación final y el nombre en mayúsculas, y el modal muestra el enlace a `/salon`.
-- [ ] `/salon` muestra la pestaña CAÍDA con su top y GLOBAL suma por jugador su mejor marca de `rocas` y de `caida`.
-- [ ] `/juegos/caida` muestra el top real de CAÍDA y `/biblioteca` muestra la tarjeta de CAÍDA junto a ROCAS.
+- [ ] La migración `add_game_tetris` solo inserta la fila de `tetris` en `games`; `games` contiene exactamente `rocas` y `tetris`, sin filas de relleno de otros juegos.
+- [ ] GUARDAR PUNTUACIÓN inserta en `scores` una fila con `game_id = 'tetris'`, la puntuación final y el nombre en mayúsculas, y el modal muestra el enlace a `/salon`.
+- [ ] `/salon` muestra la pestaña TETRIS con su top y GLOBAL suma por jugador su mejor marca de `rocas` y de `tetris`.
+- [ ] `/juegos/tetris` muestra el top real de TETRIS y `/biblioteca` muestra la tarjeta de TETRIS junto a ROCAS.
 - [ ] El resto de placeholders (`serpentina`, etc.) siguen con puntuación simulada y sin tarjeta en `/biblioteca`.
-- [ ] Al terminar las pruebas no quedan filas de prueba en `scores` para `caida`.
+- [ ] Al terminar las pruebas no quedan filas de prueba en `scores` para `tetris`.
 - [ ] Ningún archivo bajo `app/` importa de `references/` ni `createClient` de `@supabase/supabase-js`.
-- [ ] `CLAUDE.md` documenta CAÍDA como juego jugable, la carpeta `tetris/` y que `onLives` es opcional.
+- [ ] `CLAUDE.md` documenta TETRIS como juego jugable, la carpeta `tetris/` y que `onLives` es opcional.
 
 ---
 
 ## Decisiones
 
-- **Sí:** reutilizar la entrada `caida` del catálogo (decisión del usuario). Mismo concepto, conserva portada, id y rutas. **No:** crear una entrada nueva, que duplicaría Tetris.
+- **Sí:** reutilizar la entrada `caida` del catálogo, renombrando su `id` a `tetris` y su `title` a `TETRIS` (decisión del usuario). Conserva portada y demás campos; el `id` pasa a coincidir con el juego y las rutas con `/juegos/tetris`. **No:** crear una entrada nueva, que duplicaría Tetris; **No:** mantener `caida` como `id`, que ya no describe el juego. crear una entrada nueva, que duplicaría Tetris.
 - **Sí:** las 8 piezas del código, incluida la N (decisión del usuario). Es el comportamiento real del original. **No:** limitarse a las 7 del README ni sustituir el sorteo por una bolsa de 7: cambia la jugabilidad.
 - **Sí:** colores originales de las piezas (decisión del usuario). **No:** neón con los tokens del tema ni glow; es la excepción respecto a `rocas`, aceptada porque las 8 piezas necesitan 8 colores distinguibles.
 - **Sí:** hacer opcional `onLives` y mostrar `—` en el HUD (decisión del usuario). **No:** reportar una vida falsa, que mostraría un corazón engañoso; **No:** tocar el motor de `rocas`.
@@ -183,7 +183,7 @@ Cada paso deja la app ejecutable (`npm run dev`) y se puede commitear solo.
 | La pieza N (3×3 hueca) y los _wall kicks_ simples pueden dejar al jugador sin rotación posible.                       | Aceptado: es la mecánica del original.                                                                                    |
 | El panel dibujado en el canvas queda borroso o desalineado al escalar.                                                | La lógica y el dibujo usan siempre 800×600 con `setTransform`; criterio de nitidez a distintos `devicePixelRatio`.        |
 | Sin RLS ni anti-trampas cualquiera con la clave publicable puede escribir `scores` y `games`.                         | Aceptado temporalmente (SPEC 06): la spec de RLS debe ser la siguiente que toque la base.                                 |
-| Insertar `caida` en `games` crea la pestaña en `/salon` antes de que el juego sea jugable si se aplica en otro orden. | El paso 9 va después de registrar el canvas (paso 8).                                                                     |
+| Insertar `tetris` en `games` crea la pestaña en `/salon` antes de que el juego sea jugable si se aplica en otro orden. | El paso 9 va después de registrar el canvas (paso 8).                                                                     |
 | Los datos de prueba quedan en `scores`.                                                                               | El paso 10 los borra y hay un criterio que lo verifica.                                                                   |
 
 ---
