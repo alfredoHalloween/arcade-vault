@@ -39,7 +39,8 @@ export function GamePlayer({ game }: { game: Game }) {
   // `null` until the player edits it, so the remembered or session name shows up once it has loaded.
   const [typedName, setTypedName] = useState<string | null>(null);
   // Real games report lives and level themselves; changing `runKey` remounts the canvas.
-  const [gameLives, setGameLives] = useState(INITIAL_LIVES);
+  // `null` = el juego aún no ha reportado vidas (o no las tiene): el HUD muestra "—".
+  const [gameLives, setGameLives] = useState<number | null>(null);
   const [gameLevel, setGameLevel] = useState(1);
   const [runKey, setRunKey] = useState(0);
   const GameCanvas = PLAYABLE_GAMES[game.id];
@@ -62,7 +63,7 @@ export function GamePlayer({ game }: { game: Game }) {
   };
   const restart = () => {
     setScore(0);
-    setGameLives(INITIAL_LIVES);
+    setGameLives(null);
     setGameLevel(1);
     setRunKey((k) => k + 1);
     setPaused(false);
@@ -103,7 +104,7 @@ export function GamePlayer({ game }: { game: Game }) {
           <HudStat label="Puntuación" value={score.toLocaleString("es-ES")} />
           <HudStat
             label="Vidas"
-            value={"♥ ".repeat(lives).trim() || "—"}
+            value={lives ? "♥ ".repeat(lives).trim() : "—"}
             className="text-magenta [text-shadow:0_0_6px_rgba(255,0,110,0.5)]"
           />
           <HudStat

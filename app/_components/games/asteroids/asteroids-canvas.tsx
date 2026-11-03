@@ -34,7 +34,7 @@ export default function AsteroidsCanvas({
     observer.observe(canvas);
     const game = createAsteroidsGame(canvas, {
       onScore: (v) => callbacksRef.current.onScore(v),
-      onLives: (v) => callbacksRef.current.onLives(v),
+      onLives: (v) => callbacksRef.current.onLives?.(v),
       onLevel: (v) => callbacksRef.current.onLevel(v),
       onGameOver: (v) => callbacksRef.current.onGameOver(v),
     });
