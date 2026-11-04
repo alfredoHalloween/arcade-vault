@@ -37,7 +37,7 @@ export const RECENT_SCORES: RecentScore[] = [
   },
   {
     player: "ARKADYA",
-    gameId: "serpentina",
+    gameId: "snake",
     score: 7820,
     ago: "hace 24 min",
     color: "green",
