@@ -1,6 +1,6 @@
 # SPEC 10 — Juego real: SNAKE (id `snake`) con leaderboard y entrada en la biblioteca
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 05 (`05-juego-rocas-asteroides.md`), SPEC 06 (`06-leaderboard-y-tabla-games.md`), SPEC 07 (`07-biblioteca-juegos-en-base-de-datos.md`), SPEC 08 (`08-juego-tetris.md`, que hizo `onLives` opcional)
 > **Fecha:** 2026-11-04
 > **Objetivo:** Crear el clásico Snake como cuarto juego real de la plataforma, a partir de la entrada `serpentina` renombrada a `snake`, jugable en `/juegos/snake/jugar` dentro de `GamePlayer`, con serpiente neón, frutas del spritesheet aportado y su fila en `games` para que tenga ranking en `/salon`, top en `/juegos/snake` y tarjeta en `/biblioteca`.
