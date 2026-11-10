@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { DEFAULT_SKIN } from "../skins";
 import type { GameCanvasProps } from "../types";
 import { createArkanoidGame } from "./engine";
 export default function ArkanoidCanvas({
+  skin = DEFAULT_SKIN,
   paused,
   onScore,
   onLives,
@@ -12,9 +14,11 @@ export default function ArkanoidCanvas({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameRef = useRef<ReturnType<typeof createArkanoidGame> | null>(null);
   const pausedRef = useRef(paused);
+  const skinRef = useRef(skin);
   const callbacksRef = useRef({ onScore, onLives, onLevel, onGameOver });
   useEffect(() => {
     pausedRef.current = paused;
+    skinRef.current = skin;
     callbacksRef.current = { onScore, onLives, onLevel, onGameOver };
   });
   // El motor se crea una sola vez; reiniciar es remontar el componente (key).
@@ -32,12 +36,16 @@ export default function ArkanoidCanvas({
     resize();
     const observer = new ResizeObserver(resize);
     observer.observe(canvas);
-    const game = createArkanoidGame(canvas, {
-      onScore: (v) => callbacksRef.current.onScore(v),
-      onLives: (v) => callbacksRef.current.onLives?.(v),
-      onLevel: (v) => callbacksRef.current.onLevel(v),
-      onGameOver: (v) => callbacksRef.current.onGameOver(v),
-    });
+    const game = createArkanoidGame(
+      canvas,
+      {
+        onScore: (v) => callbacksRef.current.onScore(v),
+        onLives: (v) => callbacksRef.current.onLives?.(v),
+        onLevel: (v) => callbacksRef.current.onLevel(v),
+        onGameOver: (v) => callbacksRef.current.onGameOver(v),
+      },
+      skinRef.current,
+    );
     game.setPaused(pausedRef.current);
     gameRef.current = game;
     return () => {
@@ -49,6 +57,10 @@ export default function ArkanoidCanvas({
   useEffect(() => {
     gameRef.current?.setPaused(paused);
   }, [paused]);
+  // Cambiar de skin solo cambia el render: no remonta ni reinicia la partida.
+  useEffect(() => {
+    gameRef.current?.setSkin(skin);
+  }, [skin]);
   return (
     <canvas
       ref={canvasRef}

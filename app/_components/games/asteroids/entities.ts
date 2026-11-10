@@ -3,6 +3,7 @@ import {
   BULLET_SPEED,
   BULLET_TTL,
   H,
+  PIXEL_SIZE,
   POWERUP_RADIUS,
   POWERUP_TTL,
   RADII,
@@ -17,14 +18,25 @@ import {
   TRIPLE_SPREAD,
   W,
 } from "./constants";
+import type { Palette, SkinColor } from "./constants";
 import { rand, randInt, wrap } from "./utils";
-/** Colores resueltos de los tokens del tema (`--cyan`, `--magenta`, …). */
-export type Palette = {
-  cyan: string;
-  magenta: string;
-  yellow: string;
-  green: string;
+/** Paleta de la skin activa con los colores ya resueltos (tokens leídos o hex de respaldo). */
+export type Look = {
+  [K in keyof Palette]: Palette[K] extends SkinColor
+    ? string
+    : Palette[K] extends SkinColor | null
+      ? string | null
+      : Palette[K];
 };
+/** Repasa el trazado actual con el núcleo claro de la skin (solo NEON lo define). */
+function strokeCore(ctx: CanvasRenderingContext2D, look: Look, width: number) {
+  if (!look.core) return;
+  ctx.shadowBlur = 0;
+  ctx.globalAlpha = 0.85;
+  ctx.strokeStyle = look.core;
+  ctx.lineWidth = width * 0.45;
+  ctx.stroke();
+}
 export class Bullet {
   x: number;
   y: number;
@@ -45,14 +57,27 @@ export class Bullet {
     this.ttl -= dt;
     if (this.ttl <= 0) this.dead = true;
   }
-  draw(ctx: CanvasRenderingContext2D, palette: Palette) {
+  draw(ctx: CanvasRenderingContext2D, look: Look) {
     ctx.save();
-    ctx.fillStyle = palette.yellow;
-    ctx.shadowColor = palette.yellow;
-    ctx.shadowBlur = 8;
+    ctx.fillStyle = look.bullet;
+    if (look.mode === "pixel") {
+      const s = PIXEL_SIZE * 2;
+      ctx.fillRect(this.x - s / 2, this.y - s / 2, s, s);
+      ctx.restore();
+      return;
+    }
+    ctx.shadowColor = look.bullet;
+    ctx.shadowBlur = look.glow.bullet;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fill();
+    if (look.core) {
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = look.core;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
     ctx.restore();
   }
 }
@@ -98,15 +123,15 @@ export class Asteroid {
       new Asteroid(this.x, this.y, this.size - 1),
     ];
   }
-  draw(ctx: CanvasRenderingContext2D, palette: Palette) {
+  draw(ctx: CanvasRenderingContext2D, look: Look) {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.rot);
-    ctx.strokeStyle = palette.magenta;
-    ctx.shadowColor = palette.magenta;
-    ctx.shadowBlur = 10;
-    ctx.lineWidth = 1.5;
-    ctx.lineJoin = "round";
+    ctx.strokeStyle = look.asteroid;
+    ctx.shadowColor = look.asteroid;
+    ctx.shadowBlur = look.glow.asteroid;
+    ctx.lineWidth = look.lineWidth.asteroid;
+    ctx.lineJoin = look.mode === "pixel" ? "miter" : "round";
     ctx.beginPath();
     ctx.moveTo(this.verts[0][0], this.verts[0][1]);
     for (let i = 1; i < this.verts.length; i++) {
@@ -114,10 +139,11 @@ export class Asteroid {
     }
     ctx.closePath();
     ctx.stroke();
+    strokeCore(ctx, look, look.lineWidth.asteroid);
     ctx.restore();
   }
 }
-/** Partícula de explosión; toma el color de lo que se destruyó. */
+/** Partícula de explosión; su color sale de la skin según lo que se destruyó. */
 export class Particle {
   x: number;
   y: number;
@@ -125,12 +151,12 @@ export class Particle {
   vy: number;
   life: number;
   ttl: number;
-  color: string;
+  kind: "ship" | "rock";
   dead = false;
-  constructor(x: number, y: number, color: string) {
+  constructor(x: number, y: number, kind: "ship" | "rock") {
     this.x = x;
     this.y = y;
-    this.color = color;
+    this.kind = kind;
     const angle = rand(0, Math.PI * 2);
     const speed = rand(30, 130);
     this.vx = Math.cos(angle) * speed;
@@ -145,10 +171,22 @@ export class Particle {
     if (this.ttl <= 0) this.dead = true;
   }
   // Sin glow por partícula: el coste de shadowBlur se evita aquí a propósito.
-  draw(ctx: CanvasRenderingContext2D) {
+  draw(ctx: CanvasRenderingContext2D, look: Look) {
+    const color = this.kind === "ship" ? look.shipDebris : look.rockDebris;
     ctx.save();
     ctx.globalAlpha = Math.max(this.ttl / this.life, 0);
-    ctx.strokeStyle = this.color;
+    if (look.mode === "pixel") {
+      ctx.fillStyle = color;
+      ctx.fillRect(
+        this.x - PIXEL_SIZE / 2,
+        this.y - PIXEL_SIZE / 2,
+        PIXEL_SIZE,
+        PIXEL_SIZE,
+      );
+      ctx.restore();
+      return;
+    }
+    ctx.strokeStyle = color;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(this.x, this.y);
@@ -184,22 +222,37 @@ export class PowerUp {
     if (this.ttl <= 0) this.dead = true;
   }
 
-  draw(ctx: CanvasRenderingContext2D, palette: Palette) {
+  draw(ctx: CanvasRenderingContext2D, look: Look) {
     // Parpadea durante los últimos 2 s de vida
     if (this.ttl < 2 && Math.floor(this.ttl * 8) % 2 === 0) return;
     const pulse = 0.85 + Math.sin(performance.now() / 150) * 0.15;
     ctx.save();
-    ctx.shadowColor = palette.green;
-    ctx.shadowBlur = 10;
-    ctx.strokeStyle = palette.green;
-    ctx.fillStyle = palette.green;
-    ctx.lineWidth = 2;
+    ctx.shadowColor = look.powerUp;
+    ctx.shadowBlur = look.glow.powerUp;
+    ctx.strokeStyle = look.powerUp;
+    ctx.fillStyle = look.powerUp;
+    ctx.lineWidth = look.lineWidth.powerUp;
+    const r = this.radius * pulse;
+
+    if (look.mode === "pixel") {
+      // Caja recta con tres "píxeles" dentro: a baja resolución el texto no se lee.
+      ctx.lineJoin = "miter";
+      ctx.strokeRect(this.x - r, this.y - r, r * 2, r * 2);
+      const pip = PIXEL_SIZE + 1;
+      for (const dx of [-2, 0, 2]) {
+        ctx.fillRect(this.x + dx * pip - pip / 2, this.y - pip / 2, pip, pip);
+      }
+      ctx.restore();
+      return;
+    }
 
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(Math.PI / 4);
-    const r = this.radius * pulse;
-    ctx.strokeRect(-r, -r, r * 2, r * 2);
+    ctx.beginPath();
+    ctx.rect(-r, -r, r * 2, r * 2);
+    ctx.stroke();
+    strokeCore(ctx, look, look.lineWidth.powerUp);
     ctx.restore();
 
     ctx.font = "bold 12px monospace";
@@ -272,7 +325,7 @@ export class Ship {
     return [new Bullet(ox, oy, this.angle)];
   }
 
-  draw(ctx: CanvasRenderingContext2D, palette: Palette) {
+  draw(ctx: CanvasRenderingContext2D, look: Look) {
     if (this.dead) return;
     // Parpadeo durante la invencibilidad de reaparición
     if (this.invincible > 0 && Math.floor(this.invincible * 8) % 2 === 0) {
@@ -282,11 +335,11 @@ export class Ship {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.angle);
-    ctx.strokeStyle = palette.cyan;
-    ctx.shadowColor = palette.cyan;
-    ctx.shadowBlur = 12;
-    ctx.lineWidth = 1.5;
-    ctx.lineJoin = "round";
+    ctx.strokeStyle = look.ship;
+    ctx.shadowColor = look.ship;
+    ctx.shadowBlur = look.glow.ship;
+    ctx.lineWidth = look.lineWidth.ship;
+    ctx.lineJoin = look.mode === "pixel" ? "miter" : "round";
 
     // Silueta clásica: triángulo con muesca trasera
     ctx.beginPath();
@@ -296,6 +349,11 @@ export class Ship {
     ctx.lineTo(-12, 9); // ala derecha
     ctx.closePath();
     ctx.stroke();
+    if (look.core) {
+      ctx.save();
+      strokeCore(ctx, look, look.lineWidth.ship);
+      ctx.restore();
+    }
 
     // Llama del propulsor
     if (this.thrusting && Math.random() > 0.35) {
@@ -303,8 +361,8 @@ export class Ship {
       ctx.moveTo(-8, -4);
       ctx.lineTo(-8 - rand(6, 14), 0);
       ctx.lineTo(-8, 4);
-      ctx.strokeStyle = palette.yellow;
-      ctx.shadowColor = palette.yellow;
+      ctx.strokeStyle = look.thrust;
+      ctx.shadowColor = look.thrust;
       ctx.stroke();
     }
 
