@@ -3,9 +3,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Game } from "@/app/data/types";
 import { PLAYABLE_GAMES } from "./games/registry";
+import { SKINNED_GAMES, SKINS } from "./games/skins";
 import { submitScore } from "@/app/juegos/[id]/jugar/actions";
 import { useSession } from "./session-provider";
 import { usePlayerName } from "./use-player-name";
+import { useSkin } from "./use-skin";
 const INITIAL_LIVES = 3;
 const MAX_NAME = 16;
 const POINTS_PER_LEVEL = 2500;
@@ -44,6 +46,8 @@ export function GamePlayer({ game }: { game: Game }) {
   const [gameLevel, setGameLevel] = useState(1);
   const [runKey, setRunKey] = useState(0);
   const GameCanvas = PLAYABLE_GAMES[game.id];
+  const [skin, setSkin] = useSkin();
+  const hasSkins = Boolean(GameCanvas) && SKINNED_GAMES.has(game.id);
   const name = typedName ?? rememberedName ?? user?.name ?? "INVITADO";
   const lives = GameCanvas ? gameLives : INITIAL_LIVES;
   const level = GameCanvas
@@ -113,7 +117,37 @@ export function GamePlayer({ game }: { game: Game }) {
             className="text-yellow [text-shadow:0_0_6px_rgba(245,255,0,0.5)]"
           />
         </div>
-        <div className="flex gap-2.5">
+        <div className="flex flex-wrap gap-2.5">
+          {hasSkins && (
+            <div
+              role="group"
+              aria-label="Skin del juego"
+              className="flex gap-1.5"
+            >
+              {SKINS.map((s) => {
+                const active = s.id === skin;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    aria-pressed={active}
+                    className={
+                      active
+                        ? "btn bg-cyan! px-3! text-[8px]! text-bg! shadow-[0_0_12px_rgba(0,245,255,0.55)]!"
+                        : "btn ghost px-3! text-[8px]!"
+                    }
+                    onClick={(e) => {
+                      // Un botón enfocado se activaría con Espacio, la tecla de disparo.
+                      e.currentTarget.blur();
+                      setSkin(s.id);
+                    }}
+                  >
+                    {s.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
           <button
             type="button"
             className="btn btn-yellow"
@@ -142,6 +176,7 @@ export function GamePlayer({ game }: { game: Game }) {
           {GameCanvas ? (
             <GameCanvas
               key={runKey}
+              skin={skin}
               paused={paused || over}
               onScore={setScore}
               onLives={setGameLives}

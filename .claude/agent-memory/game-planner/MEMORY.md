@@ -1,0 +1,2 @@
+- [Nombres en inglés](feedback_nombres-en-ingles.md) — títulos e ids de juegos en inglés, genéricos y sin marca
+- [Historial de sesiones](project_historial-sesiones.md) — qué se propuso y recomendó en cada sesión (2026-11-10: INVADERS ⭐; 20 más S-04..S-23)
