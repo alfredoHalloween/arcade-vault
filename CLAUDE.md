@@ -10,6 +10,8 @@ To add another game with its leaderboard (e.g. from `references/started-games/`)
 
 To decide which game to add next, use the `game-planner` subagent (`.claude/agents/game-planner.md`): it proposes games that fit the platform, keeps its memory in `.claude/agent-memory/game-planner/` (versioned) and maintains the To Do `references/game-suggestions-todo.md` (edit the states there to give it feedback).
 
+For a game-jam style flow, use the `game-jam` subagent (`.claude/agents/game-jam.md`): give it a theme and it designs an original game on its own (English id/title, neon vector, keyboard) and writes two Draft specs in `specs/game-jam/<game-id>/`: `01-juego-<id>-<slug>.md` (playable game, catalog entry, registry) and `02-integracion-<id>-leaderboard.md` (`games` row, `/salon`, `/biblioteca`, end-to-end test). Both follow the format of specs 08–10 and mark the agent's own choices as `(supuesto del agente)` in Decisiones. It writes no code and touches nothing outside that folder; review the specs, set them to `Aprobado` and implement them with `/spec-impl`.
+
 No test runner is configured.
 
 A project hook (`.claude/settings.json` → `.claude/hooks/lint-format.sh`, `PostToolUse` on `Write|Edit`) runs Prettier and then `eslint --fix` on every `.ts/.tsx/.js/.jsx/.mjs` file Claude writes, and Prettier on `.md` files. It skips `node_modules/`, `.next/` and `references/`; if ESLint leaves errors it exits with code 2 so they are fed back to Claude. Prettier uses its defaults (`.prettierrc.json`, `.prettierignore`).
