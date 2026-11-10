@@ -8,6 +8,8 @@ Arcade Vault: a platform to play games online and compete for the highest score.
 
 To add another game with its leaderboard (e.g. from `references/started-games/`), run `/nuevo-juego` (`.claude/skills/nuevo-juego/`): it asks questions and writes a numbered spec following the pattern of specs 05–07; implement it afterwards with `/spec-impl`.
 
+To decide which game to add next, use the `game-planner` subagent (`.claude/agents/game-planner.md`): it proposes games that fit the platform, keeps its memory in `.claude/agent-memory/game-planner/` (versioned) and maintains the To Do `references/game-suggestions-todo.md` (edit the states there to give it feedback).
+
 No test runner is configured.
 
 A project hook (`.claude/settings.json` → `.claude/hooks/lint-format.sh`, `PostToolUse` on `Write|Edit`) runs Prettier and then `eslint --fix` on every `.ts/.tsx/.js/.jsx/.mjs` file Claude writes, and Prettier on `.md` files. It skips `node_modules/`, `.next/` and `references/`; if ESLint leaves errors it exits with code 2 so they are fed back to Claude. Prettier uses its defaults (`.prettierrc.json`, `.prettierignore`).
